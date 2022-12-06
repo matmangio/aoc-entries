@@ -6,14 +6,16 @@ public static class Program {
 
     static void Main(string[] args) {
 
-        int max = 0;
+        List<int> maxThree = new List<int>(new int[3]);
         while (!isEOF()) {
             int current = getNextElfCarry();
-            if (current > max) 
-                max = current;
+            int minMax = maxThree.Min();
+            if (current > minMax) 
+                maxThree[maxThree.IndexOf(minMax)] = current;
         }
 
-        Console.WriteLine("Star1: " + max);
+        Console.WriteLine("Star1: " + maxThree.Max());
+        Console.WriteLine("Star2: " + maxThree.Sum());
 
     }
 
