@@ -12,6 +12,7 @@ class Program {
     static void Main(string[] args) {
 
         int fullContainmentsCounter = 0;
+        int overlapCounter = 0;
 
         while (!isEOF()) {
             string line = Console.ReadLine() + "";
@@ -21,15 +22,22 @@ class Program {
                 Assignment ass2 = parseAssignement(assignmentsStrings[1]);
                 if (fullyContains(ass1, ass2) || fullyContains(ass2, ass1))
                     fullContainmentsCounter++;
+                if (overlap(ass1, ass2))
+                    overlapCounter++;
             }
         }
 
         Console.WriteLine("Star1: " + fullContainmentsCounter);
+        Console.WriteLine("Star2: " + overlapCounter);
 
     }
 
     static bool fullyContains(Assignment container, Assignment contained) {
         return container.start <= contained.start && container.end >= contained.end;
+    }
+
+    static bool overlap(Assignment ass1, Assignment ass2) {
+        return (ass1.start <= ass2.end && ass1.end >= ass2.start) || (ass2.start <= ass1.end && ass2.end >= ass1.start);
     }
 
     static Assignment parseAssignement(string str) {
