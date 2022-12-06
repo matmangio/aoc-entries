@@ -7,11 +7,15 @@ class Program {
 
         string input = Console.ReadLine() + "";
 
-        int endIndex = 3;
-        for (; ContainsDuplicates(input.Substring(endIndex - 3, 4)); endIndex++);
+        Console.WriteLine("Star1: " + charactersBeforeDuplicates(input, 4));
+        Console.WriteLine("Star2: " + charactersBeforeDuplicates(input, 14));
 
-        Console.WriteLine("Star1: " + (endIndex + 1));
+    }
 
+    static int charactersBeforeDuplicates(string input, int windowSize) {
+        int startIndex;
+        for (startIndex = 0; ContainsDuplicates(input.Substring(startIndex, windowSize)); startIndex++);
+        return startIndex + windowSize;
     }
 
     static bool ContainsDuplicates(string input) {
