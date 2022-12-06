@@ -11,15 +11,29 @@ class Program {
 
     static void Main(string[] args) {
 
-        List<Stack<char>> stacks = getInitialStacks();
+        List<Stack<char>> stacks1 = getInitialStacks();
+        List<Stack<char>> stacks2 = copyStack(stacks1);
 
         while (!isEOF()) {
             Step next = getNextStep();
-            stacks = executeStep(stacks, next);
+            executeSimpleStep(stacks1, next);
+            executeComplexStep(stacks2, next);
         }
 
-        Console.WriteLine("Star1: " + getStacksTops(stacks));
+        Console.WriteLine("Star1: " + getStacksTops(stacks1));
+        Console.WriteLine("Star2: " + getStacksTops(stacks2));
 
+    }
+
+    private static List<Stack<char>> copyStack(List<Stack<char>> original) {
+        List<Stack<char>> copy = new List<Stack<char>>();
+
+        foreach (Stack<char> stack in original) {
+            char[] array = stack.ToArray();
+            copy.Add(new Stack<char>(array.Reverse()));
+        }
+
+        return copy;
     }
 
     private static List<Stack<char>> getInitialStacks() {
@@ -77,10 +91,19 @@ class Program {
         return step;
     }
 
-    private static List<Stack<char>> executeStep(List<Stack<char>> stacks, Step step) {
+    private static void executeSimpleStep(List<Stack<char>> stacks, Step step) {
         for (int i = 0; i < step.boxes; i++)
             stacks[step.toStack].Push(stacks[step.fromStack].Pop());
-        return stacks;
+    }
+
+    private static void executeComplexStep(List<Stack<char>> stacks, Step step) {
+        List<char> supportList = new List<char>();
+
+        for (int i = 0; i < step.boxes; i++)
+            supportList.Add(stacks[step.fromStack].Pop());
+
+        for (int i = supportList.Count - 1; i >= 0; i--)
+            stacks[step.toStack].Push(supportList[i]);
     }
 
     private static string getStacksTops(List<Stack<char>> stacks) {
