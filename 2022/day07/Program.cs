@@ -6,24 +6,32 @@ namespace day07 {
 
         static void Main(string[] args) {
 
+            const int smallTreshold = 100000;
+            const int diskSpace = 70000000;
+            const int neededSpace = 30000000;
+
             Directory fileSystem = new FileSystemParser().parseTillEof(Console.In);
-            List<Directory> smallDirs = findDirectoriesSmallerThan(fileSystem, 100000);
 
             int total = 0;
+            List<Directory> smallDirs = findDirectoriesMatching(fileSystem, dir => (dir.getSize() <= smallTreshold));
             foreach (Directory d in smallDirs) 
                 total += d.getSize();
-
             Console.WriteLine("Star1: " + total);
+
+            int spaceToFree = neededSpace - (diskSpace - fileSystem.getSize());
+            List<Directory> bigEnoughDirs = findDirectoriesMatching(fileSystem, dir => (dir.getSize() >= spaceToFree));
+            Directory? smallestAmongBigEnough = bigEnoughDirs.MinBy(dir => dir.getSize());
+            Console.WriteLine("Star2: " + ((smallestAmongBigEnough != null)? smallestAmongBigEnough.getSize() : "not found" ));
 
         }
 
-        static List<Directory> findDirectoriesSmallerThan(Directory root, int size) {
+        static List<Directory> findDirectoriesMatching(Directory root, Predicate<Directory> predicate) {
             List<Directory> matches = new List<Directory>();
 
-            if (root.getSize() <= size) matches.Add(root);
+            if (predicate.Invoke(root)) matches.Add(root);
             foreach(INode node in root) {
                 if (node.isDirectory()) {
-                    List<Directory> newMatches = findDirectoriesSmallerThan((Directory) node, size);
+                    List<Directory> newMatches = findDirectoriesMatching((Directory) node, predicate);
                     foreach (Directory dir in newMatches)
                         matches.Add(dir);
                 }
