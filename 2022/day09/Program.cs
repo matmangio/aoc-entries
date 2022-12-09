@@ -9,20 +9,33 @@ public class Program {
     static void Main(string[] args) {
 
         List<Motion> movement = parseInput();
-        Position head = new Position(), tail = new Position();
-        List<Position> visitedPositions = new List<Position>();
-        visitedPositions.Add(tail);
+        List<Position> knots = new List<Position>();
+        for (int i = 0; i < 10; i++) {
+            knots.Add(new Position());
+        }
+        
+        List<Position> secondKnotVisitedPositions = new List<Position>();
+        secondKnotVisitedPositions.Add(knots[1]);
+
+        List<Position> lastKnotVisitedPositions = new List<Position>();
+        lastKnotVisitedPositions.Add(knots.Last());
 
         foreach (Motion m in movement) {
             for (int i = 0; i < m.steps; i++) {
-                head = move(m.dir, head);
-                tail = updatePosition(tail, head);
-                if (!visitedPositions.Contains(tail))
-                    visitedPositions.Add(tail);
+                knots[0] = move(m.dir, knots.First());
+                for (int j = 1; j < knots.Count(); j++)
+                    knots[j] = updatePosition(knots[j], knots[j-1]);
+
+                if (!secondKnotVisitedPositions.Contains(knots[1]))
+                    secondKnotVisitedPositions.Add(knots[1]);
+
+                if (!lastKnotVisitedPositions.Contains(knots.Last()))
+                    lastKnotVisitedPositions.Add(knots.Last());
             }
         }
 
-        Console.WriteLine("Star1: " + visitedPositions.Count());
+        Console.WriteLine("Star1: " + secondKnotVisitedPositions.Count());
+        Console.WriteLine("Star2: " + lastKnotVisitedPositions.Count());
 
     }
 
